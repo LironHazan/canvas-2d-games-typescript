@@ -3,6 +3,7 @@ const PADDLE_THICKNESS = 10;
 const PADDLE_DIST_FROM_EDGE = 60;
 const FPS = 30;
 const BG = 'black';
+const MOVEP = 20;
 
 // TODO: support keys
 export class BallPaddleGame {
@@ -29,7 +30,11 @@ export class BallPaddleGame {
         ctx.fillRect(topLeftX,topLeftY, boxWidth,boxHeight);
     }
 
-    static colorCircle(ctx: CanvasRenderingContext2D, centerX: number,centerY: number, radius: number, fillColor: string) {
+    static colorCircle(ctx: CanvasRenderingContext2D,
+                       centerX: number,
+                       centerY: number,
+                       radius: number,
+                       fillColor: string) {
         ctx.fillStyle = fillColor;
         ctx.beginPath();
         ctx.arc(centerX,centerY, 10, 0,Math.PI*2, true);
@@ -38,10 +43,26 @@ export class BallPaddleGame {
 
     setup() {
         this.canvas = document.querySelector('#renderer');
-        this.ctx = this.canvas.getContext('2d'); // replace to webgl2
+        this.ctx = this.canvas.getContext('2d'); // replace to webgl2 meaning different API
+
+        // todo: fix and do something cool as the background..
+        // const array = new Uint32Array(this.canvas.width * this.canvas.width);
+        // for(let i=0; i < array.length; i++) {
+        //     array[i] = 0xff000000|(Math.sin(i*0.0001)*0xffffff);
+        // }
+        //
+        // const imagedata = new ImageData(new Uint8ClampedArray(array.buffer), this.canvas.width, this.canvas.height);
+        // this.ctx.putImageData(imagedata, 0, 0);
+
         this.ctx.fillStyle = BG;
         this.ctx.fillRect(0,0, this.canvas.width, this.canvas.height);
-        this.canvas.addEventListener('mousemove', (e) => this.updateMousePos(e));
+        this.registerListeners();
+    }
+
+    registerListeners() {
+        this.canvas.addEventListener('mousemove', (e: MouseEvent) => this.updateMousePos(e));
+        document.addEventListener('keydown', (e: KeyboardEvent) => this.keyPressed(e));
+        document.addEventListener('keyup', (e: KeyboardEvent) => this.keyPressed(e));
     }
 
     start() {
@@ -60,6 +81,19 @@ export class BallPaddleGame {
         const root = document.documentElement;
         const mouseX = e.clientX - left - root.scrollLeft;
         this.paddleX = mouseX - PADDLE_WIDTH/2;
+    }
+
+    keyPressed(e: KeyboardEvent) {
+        //todo: fix a bug where it leaves the borders
+        switch (e.key) {
+            case 'ArrowLeft':
+                this.paddleX = this.paddleX - MOVEP;
+                break;
+            case 'ArrowRight':
+                this.paddleX = this.paddleX + MOVEP;
+                break;
+            default:
+        }
     }
 
     updateAll() {
