@@ -1,15 +1,8 @@
-import {Component, OnInit} from '@angular/core';
-import {BallPaddleGame} from "./games/ball-game";
-import {SimpleTileMap} from "./games/simple-tile-map";
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  title = 'canvas-tile-games';
-
-  ngOnInit(): void {
-  }
-}
+export class AppComponent {}
