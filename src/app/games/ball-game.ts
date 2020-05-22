@@ -1,11 +1,12 @@
 const PADDLE_WIDTH = 100;
 const PADDLE_THICKNESS = 10;
 const PADDLE_DIST_FROM_EDGE = 60;
-const FPS = 30;
 const BG = 'black';
-const MOVEP = 20;
+const MOVEP = 40;
 
-// TODO: support keys
+//todo: checkout how can I combine MatterJs instead of some calcs that being done in here
+//todo: add sound when hitting the ball
+// using https://github.com/KilledByAPixel/ZzFX (or use webaudioContext myself..)
 export class BallPaddleGame {
     private canvas: HTMLCanvasElement;
     private ctx: CanvasRenderingContext2D;
@@ -43,7 +44,7 @@ export class BallPaddleGame {
 
     setup() {
         this.canvas = document.querySelector('#renderer');
-        this.ctx = this.canvas.getContext('2d'); // replace to webgl2 meaning different API
+        this.ctx = this.canvas.getContext('2d');
 
         // todo: fix and do something cool as the background..
         // const array = new Uint32Array(this.canvas.width * this.canvas.width);

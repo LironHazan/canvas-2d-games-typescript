@@ -1,0 +1,11 @@
+<div class="title">
+  <h3 class="link" [routerLink]="['/tilemap']"
+      ngMicroInteract type='bounce' [options]="{ duration: 800}" trigger="mousedown">  TileMap Concept </h3>
+  <h3 class="link" [routerLink]="['/ball-bricks-game']"
+      ngMicroInteract type='bounce' [options]="{ duration: 800}" trigger="mousedown">  Ball Game  </h3>
+</div>
+
+
+<div class="game-board">
+  <router-outlet></router-outlet>
+</div>
