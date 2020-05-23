@@ -1,5 +1,7 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
 import {ImageUtil} from "../utils/image-util";
+import {catchError} from "rxjs/operators";
+import {Subscriber, Subscription} from "rxjs";
 
 // tiles png were taken from
 // https://github.com/mozdevs/gamedev-js-tiles/tree/6e25f5a891641cbe4d60bfbbaa11df01ff594add
@@ -8,7 +10,7 @@ import {ImageUtil} from "../utils/image-util";
   templateUrl: './tilemap-concept.component.html',
   styleUrls: ['./tilemap-concept.component.scss']
 })
-export class TilemapConceptComponent implements AfterViewInit {
+export class TilemapConceptComponent implements AfterViewInit, OnDestroy {
 
   @ViewChild('canvas', { read: ElementRef, static: true }) canvas;
 
@@ -26,14 +28,16 @@ export class TilemapConceptComponent implements AfterViewInit {
     2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2,
     2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2];
 
+  private imageUtilSub$: Subscription;
+
   ngAfterViewInit(): void {
     this.drawOnCtx = this.canvas.nativeElement.getContext('2d');
-    ImageUtil.loadImage('assets/tiles.png')
-      .then((image: HTMLImageElement) => {
-        console.log(image);
-        this.renderTileMap(image);
-      })
-      .catch(() => {
+    ImageUtil.loadImage('assets/tiles.png');
+
+    this.imageUtilSub$ = ImageUtil.imageSubject$
+      .subscribe((image: HTMLImageElement) => {
+      this.renderTileMap(image);
+    }, (e) => {
         this.drawOnCtx.fillText("Error in loading IMAGES",
           this.canvas.nativeElement.width / 2,
           this.canvas.nativeElement.width / 2);
@@ -61,6 +65,10 @@ export class TilemapConceptComponent implements AfterViewInit {
       image,
       17,
       10);
+  }
+
+  ngOnDestroy(): void {
+    this.imageUtilSub$ && this.imageUtilSub$.unsubscribe();
   }
 
 }

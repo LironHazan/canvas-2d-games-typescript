@@ -21,6 +21,8 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   private ballSpeedX = 2;
   private ballSpeedY = 4;
   private paddleX = 400;
+  score = 0;
+  gameOverCounter = 0;
 
   constructor() { }
 
@@ -101,6 +103,7 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
       this.ballY < paddleBottomEdgeY && // above bottom of paddle
       this.ballX > paddleLeftEdgeX && // right of the left side of paddle
       this.ballX < paddleRightEdgeX ) { // left of the left side of paddle
+      this.score = ++this.score;
 
       this.ballSpeedY *= -1;
 
@@ -120,6 +123,7 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   }
 
   ballReset() {
+    this.score = 0;
     this.ballX = this.canvas.nativeElement.width/2;
     this.ballY = this.canvas.nativeElement.height/2;
   }
