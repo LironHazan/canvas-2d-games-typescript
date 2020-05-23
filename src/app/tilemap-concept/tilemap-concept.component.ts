@@ -1,7 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, ViewChild} from '@angular/core';
-import {ImageUtil} from "../utils/image-util";
-import {catchError} from "rxjs/operators";
-import {Subscriber, Subscription} from "rxjs";
+import {ImageUtil} from '../utils/image-util';
+import { Subscription } from 'rxjs';
 
 // tiles png were taken from
 // https://github.com/mozdevs/gamedev-js-tiles/tree/6e25f5a891641cbe4d60bfbbaa11df01ff594add
@@ -38,7 +37,7 @@ export class TilemapConceptComponent implements AfterViewInit, OnDestroy {
       .subscribe((image: HTMLImageElement) => {
       this.renderTileMap(image);
     }, (e) => {
-        this.drawOnCtx.fillText("Error in loading IMAGES",
+        this.drawOnCtx.fillText('Error in loading IMAGES',
           this.canvas.nativeElement.width / 2,
           this.canvas.nativeElement.width / 2);
       });

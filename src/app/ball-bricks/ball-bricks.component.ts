@@ -6,6 +6,7 @@ const PADDLE_WIDTH = 100;
 const MOVEP = 40;
 const PADDLE_THICKNESS = 10;
 const PADDLE_DIST_FROM_EDGE = 60;
+const TRIES = 5;
 
 @Component({
   selector: 'app-ball-bricks',
@@ -21,8 +22,10 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   private ballSpeedX = 2;
   private ballSpeedY = 4;
   private paddleX = 400;
+  private rAFId;
   score = 0;
-  gameOverCounter = 0;
+  gameOverCounter = 5;
+  wasGameOver = false;
 
   constructor() { }
 
@@ -64,7 +67,10 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   start() {
     // https://developer.mozilla.org/en-US/docs/Games/Anatomy
     const gameLoop = () => {
-      requestAnimationFrame(() => {
+      if (this.wasGameOver) {
+        BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,this.canvas.nativeElement.height, 'tomato'); // clear screen
+      }
+    this.rAFId = requestAnimationFrame(() => {
         this.updateAll();
         gameLoop();
       });
@@ -91,6 +97,13 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
       this.ballSpeedY *= -1;
     }
     if(this.ballY > this.canvas.nativeElement.height) { // bottom
+      if (this.gameOverCounter <= TRIES && this.gameOverCounter !== 0) {
+        this.gameOverCounter = this.gameOverCounter -1;
+      } else if (this.gameOverCounter === 0) {
+        this.gameOverCounter = 0;
+        this.wasGameOver = true;
+        cancelAnimationFrame(this.rAFId);
+      }
       this.ballReset();
     }
 

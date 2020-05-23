@@ -1,7 +1,8 @@
-import {Subject} from "rxjs";
+import {Subject} from 'rxjs';
 
 export class ImageUtil {
   static imageSubject$: Subject<void | HTMLImageElement> = new Subject();
+
   static loadImage(src: string): void {
       const image = new Image();
       image.src = src;
