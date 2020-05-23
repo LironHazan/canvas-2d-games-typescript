@@ -67,9 +67,9 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   start() {
     // https://developer.mozilla.org/en-US/docs/Games/Anatomy
     const gameLoop = () => {
-      if (this.wasGameOver) {
-        BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,this.canvas.nativeElement.height, 'tomato'); // clear screen
-      }
+    if (this.wasGameOver) {
+      BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,this.canvas.nativeElement.height, 'tomato'); // clear screen
+    }
     this.rAFId = requestAnimationFrame(() => {
         this.updateAll();
         gameLoop();
@@ -127,10 +127,9 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   }
 
   drawAll() {
-    BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,this.canvas.nativeElement.height, BG); // clear screen
-
+    BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,
+      this.canvas.nativeElement.height, BG); // clear screen
     BallGameUtil.colorCircle(this.ctx, this.ballX,this.ballY, 10, 'white'); // draw ball
-
     BallGameUtil.colorRect(this.ctx, this.paddleX, this.canvas.nativeElement.height - PADDLE_DIST_FROM_EDGE,
       PADDLE_WIDTH, PADDLE_THICKNESS, 'white');
   }
