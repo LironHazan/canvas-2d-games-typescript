@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BallGameUtil} from "./ball-game-util";
+import {Zoundfx} from "ng-zzfx";
 
 const BG = 'black';
 const PADDLE_WIDTH = 100;
@@ -23,9 +24,11 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   private ballSpeedY = 4;
   private paddleX = 400;
   private rAFId;
+  hitBallSound;
   score = 0;
   gameOverCounter = 5;
   wasGameOver = false;
+
 
   constructor() { }
 
@@ -117,6 +120,7 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
       this.ballX > paddleLeftEdgeX && // right of the left side of paddle
       this.ballX < paddleRightEdgeX ) { // left of the left side of paddle
       this.score = ++this.score;
+      this.hitBallSound([1.5,.5,270,,.1,,1,1.5,,,,,,,,.1,.01]);
 
       this.ballSpeedY *= -1;
 
@@ -140,6 +144,8 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
     this.ballY = this.canvas.nativeElement.height/2;
   }
 
-  ngOnInit(): void {}
+  async ngOnInit() {
+    this.hitBallSound = await Zoundfx.start(0.2);
+  }
 
 }

@@ -6,6 +6,7 @@ import { AppComponent } from './app.component';
 import { TilemapConceptComponent } from './tilemap-concept/tilemap-concept.component';
 import { BallBricksComponent } from './ball-bricks/ball-bricks.component';
 import { NgMicroInteractModule } from 'ng-micro-interact';
+import {NgZzfxModule} from "ng-zzfx";
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { NgMicroInteractModule } from 'ng-micro-interact';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    NgMicroInteractModule
+    NgMicroInteractModule,
+    NgZzfxModule
   ],
   providers: [],
   bootstrap: [AppComponent]
