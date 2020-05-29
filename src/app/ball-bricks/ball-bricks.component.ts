@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BallGameUtil} from "./ball-game-util";
 import {Zoundfx} from "ng-zzfx";
 
@@ -14,7 +14,7 @@ const TRIES = 5;
   templateUrl: './ball-bricks.component.html',
   styleUrls: ['./ball-bricks.component.scss']
 })
-export class BallBricksComponent implements OnInit, AfterViewInit {
+export class BallBricksComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('canvas', { read: ElementRef, static: true }) canvas;
 
   private ctx: CanvasRenderingContext2D;
@@ -26,6 +26,7 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   private rAFId;
   hitBallSound;
   score = 0;
+  finalScore = 0;
   gameOverCounter = 5;
   wasGameOver = false;
 
@@ -67,18 +68,25 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public getScore() {
+    return this.score !== 0 ? this.score : this.finalScore;
+  }
+
   start() {
     // https://developer.mozilla.org/en-US/docs/Games/Anatomy
     const gameLoop = () => {
     if (this.wasGameOver) {
+      this.finalScore = this.score;
+      this.score = 0;
       BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,this.canvas.nativeElement.height, 'tomato'); // clear screen
+      cancelAnimationFrame(this.rAFId);
     }
     this.rAFId = requestAnimationFrame(() => {
         this.updateAll();
         gameLoop();
       });
     }
-    gameLoop();
+    !this.wasGameOver && gameLoop();
   }
 
   updateAll() {
@@ -105,7 +113,6 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
       } else if (this.gameOverCounter === 0) {
         this.gameOverCounter = 0;
         this.wasGameOver = true;
-        cancelAnimationFrame(this.rAFId);
       }
       this.ballReset();
     }
@@ -139,13 +146,17 @@ export class BallBricksComponent implements OnInit, AfterViewInit {
   }
 
   ballReset() {
-    this.score = 0;
     this.ballX = this.canvas.nativeElement.width/2;
     this.ballY = this.canvas.nativeElement.height/2;
   }
 
   async ngOnInit() {
     this.hitBallSound = await Zoundfx.start(0.2);
+  }
+
+  ngOnDestroy(): void {
+    // handle memory leaks
+    cancelAnimationFrame(this.rAFId);
   }
 
 }

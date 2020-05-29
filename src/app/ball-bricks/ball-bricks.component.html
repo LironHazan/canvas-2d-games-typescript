@@ -1,3 +1,6 @@
-<div> SCORE: {{ score }}</div>
-<div> Tries left: {{ gameOverCounter }}</div>
+<div class="dashboard">
+  <div> SCORE: {{ getScore() }}</div>
+  <div> Tries left: {{ gameOverCounter }}</div>
+</div>
+
 <canvas #canvas id="renderer" width="800" height="500"></canvas>
