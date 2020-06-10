@@ -19,8 +19,10 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "@sentinel-one/s1-lottie": "^1.0.0",
+    "lottie-web": "^5.6.10",
     "ng-micro-interact": "0.0.4",
-    "ng-zzfx": "0.0.5",
+    "ng-zzfx": "0.0.6",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"

@@ -1,6 +1,6 @@
 import {AfterViewInit, Component, ElementRef, OnDestroy, OnInit, ViewChild} from '@angular/core';
-import {BallGameUtil} from "./ball-game-util";
-import {Zoundfx} from "ng-zzfx";
+import {BallGameUtil} from './ball-game-util';
+import {Zoundfx} from 'ng-zzfx';
 
 const BG = 'black';
 const PADDLE_WIDTH = 100;
@@ -24,11 +24,11 @@ export class BallBricksComponent implements OnInit, AfterViewInit, OnDestroy {
   private ballSpeedY = 4;
   private paddleX = 400;
   private rAFId;
-  hitBallSound;
+  private hitBallSound;
+  private loseBallSound;
   score = 0;
   finalScore = 0;
   gameOverCounter = 5;
-  wasGameOver = false;
 
 
   constructor() { }
@@ -41,21 +41,21 @@ export class BallBricksComponent implements OnInit, AfterViewInit, OnDestroy {
     this.start();
   }
 
-  updateMousePos(e: MouseEvent) {
+  private updateMousePos(e: MouseEvent) {
     const { left } = this.canvas.nativeElement.getBoundingClientRect();
     const root = document.documentElement;
     const mouseX = e.clientX - left - root.scrollLeft;
     this.paddleX = mouseX - PADDLE_WIDTH/2;
   }
 
-  registerListeners() {
+  private registerListeners() {
     // replace with renderer
     this.canvas.nativeElement.addEventListener('mousemove', (e: MouseEvent) => this.updateMousePos(e));
     document.addEventListener('keydown', (e: KeyboardEvent) => this.keyPressed(e));
     document.addEventListener('keyup', (e: KeyboardEvent) => this.keyPressed(e));
   }
 
-  keyPressed(e: KeyboardEvent) {
+  private keyPressed(e: KeyboardEvent) {
     //todo: fix a bug where it leaves the borders
     switch (e.key) {
       case 'ArrowLeft':
@@ -72,29 +72,32 @@ export class BallBricksComponent implements OnInit, AfterViewInit, OnDestroy {
     return this.score !== 0 ? this.score : this.finalScore;
   }
 
-  start() {
+  private start() {
     // https://developer.mozilla.org/en-US/docs/Games/Anatomy
     const gameLoop = () => {
-    if (this.wasGameOver) {
-      this.finalScore = this.score;
-      this.score = 0;
-      BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,this.canvas.nativeElement.height, 'tomato'); // clear screen
-      cancelAnimationFrame(this.rAFId);
-    }
     this.rAFId = requestAnimationFrame(() => {
         this.updateAll();
-        gameLoop();
+        if (this.gameOverCounter !== 0) {
+          return gameLoop();
+        }
+        this.onGameTermination();
       });
     }
-    !this.wasGameOver && gameLoop();
+   gameLoop();
   }
 
-  updateAll() {
+  private updateAll() {
     this.moveAll();
     this.drawAll();
   }
 
-  moveAll() {
+  private onGameTermination() {
+    this.finalScore = this.score;
+    BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,this.canvas.nativeElement.height, 'tomato'); // clear screen
+    cancelAnimationFrame(this.rAFId);
+  };
+
+  private moveAll() {
     this.ballX += this.ballSpeedX;
     this.ballY += this.ballSpeedY;
 
@@ -108,11 +111,9 @@ export class BallBricksComponent implements OnInit, AfterViewInit, OnDestroy {
       this.ballSpeedY *= -1;
     }
     if(this.ballY > this.canvas.nativeElement.height) { // bottom
+      this.loseBallSound([,,224,.02,.02,.08,1,1.7,-13.9,,,,,,6.7]);
       if (this.gameOverCounter <= TRIES && this.gameOverCounter !== 0) {
-        this.gameOverCounter = this.gameOverCounter -1;
-      } else if (this.gameOverCounter === 0) {
-        this.gameOverCounter = 0;
-        this.wasGameOver = true;
+        this.gameOverCounter = --this.gameOverCounter;
       }
       this.ballReset();
     }
@@ -137,10 +138,10 @@ export class BallBricksComponent implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  drawAll() {
+  private drawAll() {
     BallGameUtil.colorRect(this.ctx, 0,0, this.canvas.nativeElement.width,
       this.canvas.nativeElement.height, BG); // clear screen
-    BallGameUtil.colorCircle(this.ctx, this.ballX,this.ballY, 10, 'white'); // draw ball
+    BallGameUtil.drawCircle(this.ctx, this.ballX,this.ballY, 10, 'white'); // draw ball
     BallGameUtil.colorRect(this.ctx, this.paddleX, this.canvas.nativeElement.height - PADDLE_DIST_FROM_EDGE,
       PADDLE_WIDTH, PADDLE_THICKNESS, 'white');
   }
@@ -151,11 +152,11 @@ export class BallBricksComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.hitBallSound = await Zoundfx.start(0.2);
+    this.hitBallSound = Zoundfx.start(0.2);
+    this.loseBallSound = Zoundfx.start(0.2);
   }
 
   ngOnDestroy(): void {
-    // handle memory leaks
     cancelAnimationFrame(this.rAFId);
   }
 

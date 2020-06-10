@@ -14,11 +14,11 @@ export class BallGameUtil {
         ctx.fillRect(topLeftX,topLeftY, boxWidth,boxHeight);
     }
 
-    static colorCircle(ctx: CanvasRenderingContext2D,
-                       centerX: number,
-                       centerY: number,
-                       radius: number,
-                       fillColor: string) {
+    static drawCircle(ctx: CanvasRenderingContext2D,
+                      centerX: number,
+                      centerY: number,
+                      radius: number,
+                      fillColor: string) {
         ctx.fillStyle = fillColor;
         ctx.beginPath();
         ctx.arc(centerX,centerY, 10, 0,Math.PI*2, true);

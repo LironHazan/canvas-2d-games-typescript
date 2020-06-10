@@ -3,4 +3,10 @@
   <div> Tries left: {{ gameOverCounter }}</div>
 </div>
 
-<canvas #canvas id="renderer" width="800" height="500"></canvas>
+<div class="game-container">
+  <div class="game-over" *ngIf="gameOverCounter === 0">
+    game over
+  </div>
+  <canvas #canvas id="renderer" width="800" height="500"></canvas>
+</div>
+
